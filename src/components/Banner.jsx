@@ -1,7 +1,13 @@
 import { Gavel, Gem, UserRoundPen } from "lucide-react";
+import { setGlobalState, useGlobalState } from "../store";
 const Banner = () => {
+  const [openBox] = useGlobalState("openBox");
+  const onChange = () => {
+    setGlobalState('boxModal','scale-100')
+    setGlobalState('openBox', true)
+  }
   return (
-    <>
+    <div className={openBox ? "opacity-30" : "opacity-100"}>
       <div className="relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
         <h1 className="my-4 mx-4 text-white py-1 font-semibold text-5xl">
           Discover, Collect, and Sell NFTs
@@ -11,7 +17,7 @@ const Banner = () => {
         </h1>
       </div>
       <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
-        <button>Create NFT</button>
+        <button onClick={onChange}>Create NFT</button>
       </div>
 
       <div class="my-7 mx-4 flex items-center gap-2 mb-5 dark:text-gray-300 lg:mb-0">
@@ -38,7 +44,7 @@ const Banner = () => {
           +10k Artist
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export default Banner;
