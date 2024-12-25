@@ -17,7 +17,7 @@ const Header = () => {
         <span></span>
       </div>
       <Link
-        href="/"
+        to="/"
         class="text-indigo-600 bg-white hover:bg-indigo-50 focus:ring-4 focus:ring-white font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 shadow-sm"
       >
         Connect Wallet
@@ -51,7 +51,7 @@ const Header = () => {
       <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
         <li>
           <Link
-            href="/"
+            to="/"
             class="block py-2 pl-3 pr-4 text-white bg-indigo-800 rounded lg:bg-transparent lg:text-white lg:p-0"
             aria-current="page"
           >
@@ -60,7 +60,7 @@ const Header = () => {
         </li>
         <li>
           <Link
-            href="/marketplace"
+            to="/marketplace"
             class="block py-2 pl-3 pr-4 text-white hover:bg-indigo-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-white lg:p-0"
           >
             Marketplace
@@ -68,7 +68,7 @@ const Header = () => {
         </li>
         <li>
           <Link
-            href="/collections"
+            to="/collections"
             class="block py-2 pl-3 pr-4 text-white hover:bg-indigo-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-white lg:p-0"
           >
             Collections
@@ -76,7 +76,7 @@ const Header = () => {
         </li>
         <li>
           <Link
-            href="/artists"
+            to="/artists"
             class="block py-2 pl-3 pr-4 text-white hover:bg-indigo-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-white lg:p-0"
           >
             Artists
@@ -84,7 +84,7 @@ const Header = () => {
         </li>
         <li>
           <Link
-            href="/community"
+            to="/community"
             class="block py-2 pl-3 pr-4 text-white hover:bg-indigo-700 lg:hover:bg-transparent lg:border-0 lg:hover:text-white lg:p-0"
           >
             Community
