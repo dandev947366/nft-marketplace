@@ -7,7 +7,7 @@ const Banner = () => {
     setGlobalState('openBox', true)
   }
   return (
-    <div className={openBox ? "opacity-30" : "opacity-100"}>
+    <div className={openBox ? "opacity-50" : "opacity-100"}>
       <div className="relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
         <h1 className="my-4 mx-4 text-white py-1 font-semibold text-5xl">
           Discover, Collect, and Sell NFTs
