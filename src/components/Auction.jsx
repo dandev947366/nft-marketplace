@@ -4,7 +4,7 @@ import { setGlobalState } from "../store";
 
 const Auction = ({ auction, title }) => {
   return (
-    <div className="full overflow-hidden md:w-6/4 md:mt-0 font-sans my-4 border border-gray-300 rounded-md shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-md hover:shadow-indigo-600 relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
+    <div className="full overflow-hidden md:w-6/4 md:mt-0 font-sans my-4 border border-gray-300 rounded-md shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-md hover:shadow-indigo-500 relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
       <Link to={"/nft/" + auction.tokenId}>
         <img
           src={auction.imageUrl}

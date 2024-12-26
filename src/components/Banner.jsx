@@ -12,7 +12,7 @@ const Banner = () => {
   return (
     <>
       <div className={openBox ? "opacity-50" : "opacity-100"}>
-        <div className="relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
+        <div className="relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto ">
           <h1 className="my-4 mx-4 text-white py-1 font-semibold text-5xl">
             Discover, Collect, and Sell NFTs
             <p className="text-[#BFC4CA] py-1 font-semibold text-3xl mb-11">
