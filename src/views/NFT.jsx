@@ -89,7 +89,8 @@ const NFT = () => {
           </div>
         </div>
       </div>
-      <div className="w-4/5 flex flex-col mt-11 mx-auto bg-white border border-gray-300 rounded-md shadow-md hover:shadow-indigo-500 -z-10 dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-4/5 flex flex-col mt-11 mx-auto bg-white border border-gray-300 rounded-md shadow-md hover:shadow-indigo-500 -z-10 dark:bg-gray-800 dark:border-gray-700 h-[calc(130vh_-_40.5rem)] overflow-y-auto">
+
         <div className={openBox ? "opacity-50" : "opacity-100"}>
           <div className="relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
             <p className="my-4 mx-4 text-white py-1 font-semibold text-2xl">
