@@ -8,6 +8,11 @@ const Banner = () => {
     setGlobalState("boxModal", "scale-100");
     setGlobalState("openBox", true);
   };
+  const onChangeAI = () => {
+    setGlobalState("aimintModal", "scale-100");
+    setGlobalState("openBox", true);
+  };
+
 
   return (
     <>
@@ -23,6 +28,9 @@ const Banner = () => {
         <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
           <button onClick={onChange}>Create NFT</button>
         </div>
+        {/* <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
+          <button onClick={onChangeAI}>Create NFT with AI</button>
+        </div> */}
         <div className="my-7 mx-4 flex items-center gap-2 mb-5 pb-5 dark:text-gray-300 lg:mb-0">
           <div
             title="component is responsive"

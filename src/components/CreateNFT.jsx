@@ -2,7 +2,7 @@ import { FaTimes } from "react-icons/fa";
 import picture4 from "../assets/images/picture4.png";
 import {useState} from 'react';
 import { useGlobalState, setGlobalState } from "../store";
-const CreateNFT = () => {
+const MintAI = () => {
      const [boxModal] = useGlobalState('boxModal')
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -83,4 +83,4 @@ const CreateNFT = () => {
   );
 };
 
-export default CreateNFT;
+export default MintAI;
