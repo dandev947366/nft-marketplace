@@ -13,6 +13,8 @@ const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
     openBox: false,
     openPromotion: true,
     auction: [],
+    connectedAccount: [],
+    bidders: [],
     auctions: [
         { id: 1, title: "Auction 1", imageUrl:picture4 },
         { id: 2, title: "Auction 2", imageUrl:picture9 },
@@ -27,5 +29,26 @@ const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
       ],
 })
 
-export { getGlobalState, useGlobalState, setGlobalState }
+const truncate = (text, startChars, endChars, maxLength) => {
+  // Ensure valid inputs
+  if (typeof text !== 'string' || text.length === 0 || typeof startChars !== 'number' || typeof endChars !== 'number' || typeof maxLength !== 'number') {
+    return text;  // Return the original text if inputs are invalid
+  }
+
+  // If the text is longer than maxLength, truncate it
+  if (text.length > maxLength) {
+    // Ensure that startChars + endChars does not exceed maxLength
+    const availableStartChars = Math.max(0, maxLength - endChars - 3); // Reserve space for '...'
+    const start = text.substring(0, availableStartChars);
+    const end = text.substring(text.length - endChars);
+
+    // Add '...' to indicate truncation
+    return start + '...' + end;
+  }
+
+  // If text is shorter than or equal to maxLength, return it as is
+  return text;
+};
+
+export { getGlobalState, useGlobalState, setGlobalState, truncate }
 

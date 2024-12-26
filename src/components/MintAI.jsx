@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 // import { NFTStorage, File } from 'nft.storage'
 import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
-import axios from 'axios';
 const CreateNFT = () => {
   const [aimintModal] = useGlobalState("aimintModal");
   const [name, setName] = useState("");

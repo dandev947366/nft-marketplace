@@ -4,6 +4,7 @@ import Empty from "../components/Empty";
 import { useGlobalState } from "../store";
 import { title } from "process";
 import OfferItem from "../components/OfferItem";
+import Footer from "../components/Footer";
 const Collections = () => {
   const [collections] = useGlobalState("collections");
   const [auctions] = useGlobalState("auctions");
@@ -12,6 +13,7 @@ const Collections = () => {
     <>
     <div className="w-4/5 mx-auto mt-11">{collections.length > 0 ? <ArtWork auctions={auctions} title={title} /> : <Empty />}</div>
     <OfferItem />
+    <Footer />
     </>
   );
 };

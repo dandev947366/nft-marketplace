@@ -4,8 +4,8 @@ import Promotion from "./Promotion";
 const Header = () => {
   return (
     <>
-      <Promotion />
-      <nav class="inset-x-0 top-0 w-full bg-indigo-600 border-gray-200 py-2.5 shadow-lg z-50">
+      {/* <Promotion /> */}
+      <nav class="inset-x-0 top-0 w-full bg-white border-b md:px-2 dark:border-gray-500/50 dark:bg-gray-800 py-2.5 shadow-lg z-50">
   <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
     <Link to="/" class="flex items-center">
       <span class="self-center text-xl font-semibold text-white whitespace-nowrap">
