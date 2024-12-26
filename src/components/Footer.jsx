@@ -38,7 +38,7 @@ const Footer = () => {
                     title="Our email"
                     className="text-primary-600"
                   >
-                    danle947366@gmail.com
+                    <span className="text-indigo-600">danle947366@gmail.com</span>
                   </Link>
                 </p>
               </div>
