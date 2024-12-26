@@ -19,6 +19,7 @@ const App = () => {
         <Route path="/nft/:id" element={<NFT />}>
           NFT
         </Route>
+
       </Routes>
     </div>
   );

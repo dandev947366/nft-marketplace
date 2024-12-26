@@ -92,9 +92,9 @@ const OfferItem = () => {
           </select>
           <button
             type="submit"
-            className="flex bg-indigo-600 justify-center items-center w-[100px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"
+            className="flex bg-indigo-600 justify-center items-center w-[200px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"
           >
-            Offer
+            Make Offer
           </button>
         </form>
       </div>

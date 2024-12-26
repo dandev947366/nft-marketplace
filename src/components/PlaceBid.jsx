@@ -2,15 +2,15 @@ import { FaTimes } from "react-icons/fa";
 import picture4 from "../assets/images/picture4.png";
 import {useState} from 'react';
 import { useGlobalState, setGlobalState } from "../store";
-const ChangePrice = () => {
-     const [priceModal] = useGlobalState('priceModal')
+const PlaceBid = () => {
+     const [bidModal] = useGlobalState('bidModal')
      const [auction] = useGlobalState('auction')
     const [imgBase64, setImgBase64] = useState(null)
     const [price, setPrice] = useState(null)
 
     const onClose = () => {
         resetForm()
-        setGlobalState('priceModal','scale-0')
+        setGlobalState('bidModal','scale-0')
         setGlobalState('openBox',false)
     }
 
@@ -27,11 +27,11 @@ const ChangePrice = () => {
   return (
     <div className={`fixed top-0 left-0 w-screen h-screen flex items-center
     justify-center bg-black bg-opacity-0 transform
-    transition-transform duration-500 ${priceModal}`}>
+    transition-transform duration-500 ${bidModal}`}>
       <div className="bg-[#303949] relative flex flex-col w-full max-w-3xl mx-auto my-8 rounded-md shadow dark:shadow-gray-100 shadow-primary-500 text-white w-11/12 sm:w-2/5 h-7/12 p-6">
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center text-gray-400 w-full">
-            <p className="font-semibold italic">Chang Price</p>
+            <p className="font-semibold italic">Place Bid</p>
             <button
               type="button"
               onClick={onClose}
@@ -55,7 +55,7 @@ const ChangePrice = () => {
             type='submit'
             className="flex bg-indigo-600 justify-center items-center w-[200px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"
           >
-            Change Price
+            Place bid
           </button>
         </form>
       </div>
@@ -63,4 +63,4 @@ const ChangePrice = () => {
   );
 };
 
-export default ChangePrice;
+export default PlaceBid;

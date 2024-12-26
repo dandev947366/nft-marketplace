@@ -73,7 +73,7 @@ const CreateNFT = () => {
                 <input type="text"  className="block flex w-full p-3 mb-3 placeholder-gray-500 rounded-md dark:placeholder-gray-300 dark:bg-gray-800 dark:text-gray-200" required placeholder="Description" value={description} onChange={(e)=>setDescription(e.target.value)} name="description"/>
           <button
             type='subimt'
-            className="flex bg-indigo-600 justify-center items-center w-[100px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"
+            className="flex bg-indigo-600 justify-center items-center w-[200px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"
           >
             Mint
           </button>

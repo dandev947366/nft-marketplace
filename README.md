@@ -24,3 +24,5 @@ npm run start
 
 ### Navigate to **http://localhost:3000**
 
+### Node Version
+v22.9.0

@@ -5,12 +5,16 @@ import ArtWork from "../components/ArtWork";
 import { useGlobalState } from "../store";
 import Footer from "../components/Footer";
 import Empty from "../components/Empty";
+import ChangePrice from "../components/ChangePrice";
+import PlaceBid from "../components/PlaceBid";
 const Home = () => {
     const [auctions] = useGlobalState('auctions')
     return (
         <div className="w-4/5 mx-auto mt-11">
             <Hero />
             {auctions.length > 0 ? <ArtWork auctions={auctions}/> : <Empty />}
+            <PlaceBid />
+           <ChangePrice />
             <OfferItem />
             <CreateNFT />
             <Footer />
