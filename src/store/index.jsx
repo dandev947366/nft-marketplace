@@ -3,8 +3,10 @@ import { createGlobalState } from "react-hooks-global-state";
 const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
     boxModal: 'scale-0',
     offerModal: 'scale-0',
+    showOffer: false,
     openBox: false,
     openPromotion: true,
+    auction: [],
     auctions: [
         { id: 1, title: "Auction 1" },
         { id: 2, title: "Auction 2" },

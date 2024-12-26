@@ -6,7 +6,7 @@ const ArtWork = ({ auctions, title, showOffer }) => {
 
     <div className="flex gap-4">
       {auctions.map((auction, i) => (
-        <Auction key={i} auction={auction} title={title} />
+        <Auction key={i} auction={auction} title={title} showOffer/>
       ))}
     </div>
   );

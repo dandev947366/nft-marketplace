@@ -4,7 +4,6 @@ import {useState} from 'react';
 import { useGlobalState, setGlobalState } from "../store";
 const CreateNFT = () => {
      const [boxModal] = useGlobalState('boxModal')
-     const [openBox] = useGlobalState("openBox");
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [fileUrl, setFileUrl] = useState('')
@@ -70,13 +69,8 @@ const CreateNFT = () => {
                 <input type="file" accept="image/png, image/gif, image/jpeg, image/webp" className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:bg-indigo-600 file:text-white file:border-solid file:border-slate-500 file:cursor-pointer file:ring-0 file:py-2 file:px-4" required onChange={changeImage}/>
             </label>
           </div>
-            <label htmlFor="" className="">
                 <input type="text" className="block flex w-full p-3 mb-3 placeholder-gray-500 rounded-md dark:placeholder-gray-300 dark:bg-gray-800 dark:text-gray-200 " required placeholder="Title" value={name} onChange={(e)=>setName(e.target.value)} name="name"/>
-            </label>
-            <label htmlFor="" className="">
                 <input type="text"  className="block flex w-full p-3 mb-3 placeholder-gray-500 rounded-md dark:placeholder-gray-300 dark:bg-gray-800 dark:text-gray-200" required placeholder="Description" value={description} onChange={(e)=>setDescription(e.target.value)} name="description"/>
-            </label>
-
           <button
             type='subimt'
             className="flex bg-indigo-600 justify-center items-center w-[100px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white"

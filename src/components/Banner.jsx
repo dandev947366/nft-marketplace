@@ -27,7 +27,6 @@ const Banner = () => {
         >
           <Gavel /> +100K Auctions
         </div>
-
         <div
           title="total views"
           class="flex items-center gap-1 px-2 py-1 text-xs text-gray-700 rounded bg-gray-300/50 dark:bg-gray-700/50 dark:text-gray-300"
@@ -35,7 +34,6 @@ const Banner = () => {
           <Gem />
           +210K Rare
         </div>
-
         <div
           title="total favorites"
           class="flex items-center gap-1 px-2 py-1 text-xs text-gray-700 rounded bg-gray-300/50 dark:bg-gray-700/50 dark:text-gray-300 my-5"
