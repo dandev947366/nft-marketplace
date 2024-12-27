@@ -54,20 +54,19 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
         uint price,
         bool sold
     );
-
     function getListingPrice() public view returns (uint) {
         return listingPrice;
     }
 
-    function setListingPrice(uint _price) public {
-        require(msg.sender == companyAcc, "Unauthorized entity");
+    function setListingPrice(uint _price) public  {
+        require(msg.sender == companyAcc, "Unauthorized");
         listingPrice = _price;
     }
 
     function changePrice(uint tokenId, uint price) public {
         require(
             auctionedItem[tokenId].owner == msg.sender,
-            "Unauthorized entity"
+            "Unauthorized"
         );
         require(
             getTimestamp(0, 0, 0, 0) > auctionedItem[tokenId].duration,
@@ -95,12 +94,12 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
         string memory tokenURI,
         uint price
     ) public payable nonReentrant {
-        require(price > 0 ether, "Sales price must be greater than 0 ethers.");
+        require(price > 0 ether, "Price must > 0 ethers.");
         require(
             msg.value >= listingPrice,
-            "Price must be up to the listing price."
+            "Price must >= listing price."
         );
-        require(mintToken(tokenURI), "Could not mint token");
+        require(mintToken(tokenURI), "Mint unsuccessful");
 
         uint tokenId = totalItems.current();
 
@@ -132,11 +131,11 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
     ) public {
         require(
             auctionedItem[tokenId].owner == msg.sender,
-            "Unauthorized entity"
+            "Unauthorized"
         );
         require(
             auctionedItem[tokenId].bids == 0,
-            "Winner should claim prize first"
+            "Winner must claim"
         );
 
         if (!auctionedItem[tokenId].live) {
@@ -158,13 +157,13 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
     function placeBid(uint tokenId) public payable {
         require(
             msg.value >= auctionedItem[tokenId].price,
-            "Insufficient Amount"
+            "Insufficient"
         );
         require(
             auctionedItem[tokenId].duration > getTimestamp(0, 0, 0, 0),
-            "Auction not available"
+            "Not available"
         );
-        require(auctionedItem[tokenId].biddable, "Auction only for bidding");
+        require(auctionedItem[tokenId].biddable, "Bidding only");
 
         BidderStruct memory bidder;
         bidder.bidder = msg.sender;
@@ -180,11 +179,11 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
     function claimPrize(uint tokenId, uint bid) public {
         require(
             getTimestamp(0, 0, 0, 0) > auctionedItem[tokenId].duration,
-            "Auction still Live"
+            "Still live"
         );
         require(
             auctionedItem[tokenId].winner == msg.sender,
-            "You are not the winner"
+            "Not winner"
         );
 
         biddersOf[tokenId][bid].won = true;
@@ -226,13 +225,13 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
     function buyAuctionedItem(uint tokenId) public payable nonReentrant {
         require(
             msg.value >= auctionedItem[tokenId].price,
-            "Insufficient Amount"
+            "Insufficient"
         );
         require(
             auctionedItem[tokenId].duration > getTimestamp(0, 0, 0, 0),
-            "Auction not available"
+            "Not available"
         );
-        require(!auctionedItem[tokenId].biddable, "Auction only for purchase");
+        require(!auctionedItem[tokenId].biddable, "Purchase only");
 
         address seller = auctionedItem[tokenId].seller;
         auctionedItem[tokenId].live = false;
@@ -253,7 +252,7 @@ contract Auction is ERC721URIStorage, ReentrancyGuard {
     }
 
     function getAuction(uint id) public view returns (AuctionStruct memory) {
-        require(auctionedItemExist[id], "Auctioned Item not found");
+        require(auctionedItemExist[id], "Not found");
         return auctionedItem[id];
     }
 
