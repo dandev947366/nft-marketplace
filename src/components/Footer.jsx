@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-
+import { setGlobalState, useGlobalState } from "../store";
 const Footer = () => {
+  const [openBox] = useGlobalState('openBox')
   return (
-    <div className="">
+    <div className={openBox ? "opacity-50 " : "opacity-100"}>
       <div className="w-full pt-8 mt-20 mx-auto bg-white border-t-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 shadow-[0px_-50px_100px_-49px_rgba(34,_197,_94,_0.5)]">
         <div className="grid gap-12 row-gap-6 px-4 mb-8 md:px-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2">

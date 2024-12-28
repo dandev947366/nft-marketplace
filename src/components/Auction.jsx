@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import CountDown from "./CountDown";
-import { setGlobalState } from "../store";
+import { setGlobalState, useGlobalState } from "../store";
 
 const Auction = ({ auction, title }) => {
+  const [openBox] = useGlobalState('openBox')
   return (
+    <div className={openBox ? "opacity-50 " : "opacity-100"}>
     <div className="full overflow-hidden md:w-6/4 md:mt-0 font-sans my-4 border border-gray-300 rounded-md shadow-md dark:bg-gray-800 dark:border-gray-700 hover:shadow-md hover:shadow-indigo-500 relative my-4 mx-4 md:flex-row w-full justify-between items-center mx-auto">
       <Link to={"/nft/" + auction.tokenId}>
         <img
@@ -31,7 +33,7 @@ const Auction = ({ auction, title }) => {
       </div>
       <div className="flex justify-evenly items-center gap-1 px-2 py-1 text-xs text-gray-700 rounded dark:text-gray-300 text-lg text-white mb-4">
         <button
-          className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md"
+          className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md hover:bg-indigo-500 "
           onClick={() => {
             setGlobalState("offerModal", "scale-100");
           }}
@@ -39,19 +41,20 @@ const Auction = ({ auction, title }) => {
           Buy NFT
         </button>
         <button
-          className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md"
+          className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md hover:bg-indigo-500 "
           onClick={() => {
             setGlobalState("bidModal", "scale-100");
           }}
         >
           Place Bid
         </button>
-        <button className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md" onClick={() => {
+        <button className="bg-indigo-600 justify-center items-center w-[100px] text-white text-sm p-1 rounded-full border border-slate-500 shadow-md hover:bg-indigo-500 " onClick={() => {
             setGlobalState("offerModal", "scale-100");
           }}>
           Make Offer
         </button>
       </div>
+    </div>
     </div>
   );
 };

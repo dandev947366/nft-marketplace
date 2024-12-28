@@ -1,5 +1,6 @@
-const {faker} = require('@faker-js/faker')
-const ipfsClient = require('ipfs-http-client')
+import { faker } from '@faker-js/faker';
+
+// import {ipfsClient} from 'ipfs-http-client'
 
 // const authorization = 'Basic ' + Buffer.from(process.env.INFURA_PID+':'+process.env.INFURA_API).toString('base64')
 

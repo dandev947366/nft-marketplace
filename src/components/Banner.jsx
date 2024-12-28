@@ -25,7 +25,7 @@ const Banner = () => {
             </p>
           </h1>
         </div>
-        <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
+        <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700 hover:bg-indigo-500 ">
           <button onClick={onChange}>Create NFT</button>
         </div>
         {/* <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
