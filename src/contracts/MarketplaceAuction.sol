@@ -1,35 +1,16 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0 <0.9.0;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./MarketplaceShared.sol";
 
-contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
+abstract contract MarketplaceAuction is MarketplaceShared {
+
     using Counters for Counters.Counter;
     Counters.Counter private totalItems;
-
-    address companyAcc;
-    uint royalityFee;
-    uint listingPrice = 0.02 ether;
     mapping(uint => AuctionStruct) auctionedItem;
     mapping(uint => bool) auctionedItemExist;
     mapping(string => uint) existingURIs;
     mapping(uint => BidderStruct[]) biddersOf;
-
-    constructor(uint _royaltyFee) ERC721("NFTMarketplace Tokens", "NMP") {
-        companyAcc = msg.sender;
-        royalityFee = _royaltyFee;
-    }
-
-    struct BidderStruct {
-        address bidder;
-        uint price;
-        uint timestamp;
-        bool refunded;
-        bool won;
-    }
 
     struct AuctionStruct {
         string name;
@@ -46,38 +27,6 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
         uint bids;
         uint duration;
     }
-
-    event AuctionItemCreated(
-        uint indexed tokenId,
-        address seller,
-        address owner,
-        uint price,
-        bool sold
-    );
-
-    function getListingPrice() public view returns (uint) {
-        return listingPrice;
-    }
-
-    function setListingPrice(uint _price) public  {
-        require(msg.sender == companyAcc, "Unauthorized");
-        listingPrice = _price;
-    }
-
-    function changePrice(uint tokenId, uint price) public {
-        require(
-            auctionedItem[tokenId].owner == msg.sender,
-            "Unauthorized"
-        );
-        require(
-            getTimestamp(0, 0, 0, 0) > auctionedItem[tokenId].duration,
-            "Auction still Live"
-        );
-        require(price > 0 ether, "Price must be greater than zero");
-
-        auctionedItem[tokenId].price = price;
-    }
-
     function mintToken(string memory tokenURI) internal returns (bool) {
         totalItems.increment();
         uint tokenId = totalItems.current();
@@ -87,7 +36,10 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
 
         return true;
     }
-
+    function payTo(address to, uint amount) internal {
+        (bool success, ) = payable(to).call{value: amount}("");
+        require(success);
+    }
     function createAuction(
         string memory name,
         string memory description,
@@ -364,32 +316,5 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
                 index++;
             }
         }
-    }
-
-    function getBidders(uint tokenId)
-        public
-        view
-        returns (BidderStruct[] memory)
-    {
-        return biddersOf[tokenId];
-    }
-
-    function getTimestamp(
-        uint sec,
-        uint min,
-        uint hour,
-        uint day
-    ) internal view returns (uint) {
-        return
-            block.timestamp +
-            (1 seconds * sec) +
-            (1 minutes * min) +
-            (1 hours * hour) +
-            (1 days * day);
-    }
-
-    function payTo(address to, uint amount) internal {
-        (bool success, ) = payable(to).call{value: amount}("");
-        require(success);
     }
 }
