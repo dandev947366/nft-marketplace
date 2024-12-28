@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
+contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private totalItems;
 
@@ -59,8 +60,7 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
         return listingPrice;
     }
 
-    function setListingPrice(uint _price) public  {
-        require(msg.sender == companyAcc, "Unauthorized");
+    function setListingPrice(uint _price) public  onlyOwner{
         listingPrice = _price;
     }
 
@@ -270,30 +270,6 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
         }
     }
 
-    function getUnsoldAuction()
-        public
-        view
-        returns (AuctionStruct[] memory Auctions)
-    {
-        uint totalItemsCount = totalItems.current();
-        uint totalSpace;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (!auctionedItem[i + 1].sold) {
-                totalSpace++;
-            }
-        }
-
-        Auctions = new AuctionStruct[](totalSpace);
-
-        uint index;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (!auctionedItem[i + 1].sold) {
-                Auctions[index] = auctionedItem[i + 1];
-                index++;
-            }
-        }
-    }
-
     function getMyAuctions()
         public
         view
@@ -312,30 +288,6 @@ contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard {
         uint index;
         for (uint i = 0; i < totalItemsCount; i++) {
             if (auctionedItem[i + 1].owner == msg.sender) {
-                Auctions[index] = auctionedItem[i + 1];
-                index++;
-            }
-        }
-    }
-
-    function getSoldAuction()
-        public
-        view
-        returns (AuctionStruct[] memory Auctions)
-    {
-        uint totalItemsCount = totalItems.current();
-        uint totalSpace;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].sold) {
-                totalSpace++;
-            }
-        }
-
-        Auctions = new AuctionStruct[](totalSpace);
-
-        uint index;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].sold) {
                 Auctions[index] = auctionedItem[i + 1];
                 index++;
             }
