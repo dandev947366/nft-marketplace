@@ -3,23 +3,65 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import { useSDK } from "@metamask/sdk-react";
-const Header = () => {
-  const [account, setAccount] = useState();
-  const { sdk, connected, connecting, provider, chainId } = useSDK();
-  const [isConnected, setIsConnected] = useState(false);
 
-  const connect = async () => {
+import axios from "axios";
+require("dotenv").config();
+// You can configure the provider options here (e.g., MetaMask, WalletConnect)
+const providerOptions = {
+  coinbasewallet: {
+    package: CoinbaseWalletSDK,
+    options: {
+      appName: "Web3Modal",
+      infuraId: {10:"https://optimism-sepolia.infura.io/v3/6402339beb7f4cdcb3e1c4a988ef21de"}
+    }
+  }
+};
+const Header = () => {
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [gasFees, setGasFees] = useState(null);
+  const fetchGasFees = async () => {
     try {
-      const accounts = await sdk?.connect();
-      setAccount(accounts?.[0]);
-      console.log(account)
-      setIsConnected(true)
-    } catch (err) {
-      console.warn("failed to connect..", err);
+      const chainId = "10"; // Replace with the actual chain ID if needed
+      const { data } = await axios.get(
+        `https://gas.api.infura.io/v3/${process.env.INFURA_API_KEY}/networks/${chainId}/suggestedGasFees`
+      );
+      console.log("Suggested gas fees:", data);
+      setGasFees(data);
+    } catch (error) {
+      console.log("Server responded with:", error);
     }
   };
+  // Function to connect wallet
+  const connectWallet = async () => {
+    try {
+      const web3Modal = new Web3Modal({
+        cacheProvider: false,
+        providerOptions,
+      });
 
+      // Open the modal and connect the wallet
+      const web3ModalInstance = await web3Modal.connect();
+
+      // Create a Web3Provider from the Web3Modal instance
+      const web3Provider = new ethers.BrowserProvider(web3ModalInstance);
+
+      // Get the signer (user's wallet)
+      const userSigner = web3Provider.getSigner();
+
+      // Set provider and signer in state
+      setProvider(web3Provider);
+      setSigner(userSigner);
+
+      console.log("Connected wallet provider:", web3Provider);
+      console.log("Signer:", userSigner);
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+    }
+  };
+  useEffect(() => {
+    fetchGasFees();
+  }, []);
   return (
     <>
       <nav className="inset-x-0 top-0 w-full bg-white border-b md:px-2 dark:border-gray-500/50 dark:bg-gray-800 py-2.5 shadow-lg z-50">
@@ -30,12 +72,15 @@ const Header = () => {
             </span>
           </Link>
           <div className="flex items-center lg:order-2">
-
+          <div>
+      <h1>Gas Fees: </h1>
+      <button onClick={fetchGasFees}>Gas fee: {gasFees}</button>
+    </div>
             <button
               className="bg-indigo-600 hover:bg-indigo-500 font-medium rounded-lg text-white px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 shadow-sm"
-              onClick={connect}
+              onClick={connectWallet}
             >
-              {isConnected ? account : 'Connect Wallet'}
+              Connect Wallet
             </button>
 
             <button
