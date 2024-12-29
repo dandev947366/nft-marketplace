@@ -1,5 +1,4 @@
-const { expect } = require('chai')
-
+import { expect } from 'chai';
 const toWei = (num) => ethers.utils.parseEther(num.toString())
 const fromWei = (num) => ethers.utils.formatEther(num)
 
@@ -22,12 +21,14 @@ describe('Contracts', () => {
   const royaltyFee = 5
 
   beforeEach(async () => {
-    const Contract = await ethers.getContractFactory('NFTMarketplace')
-    ;[seller, buyer, reseller, bidder] = await ethers.getSigners()
+  const Contract = await ethers.getContractFactory('NFTMarketplace');
+  const signers = await ethers.getSigners();
+  const [seller, buyer, reseller, bidder] = signers;
 
-    contract = await Contract.deploy(royaltyFee)
-    await contract.deployed()
-  })
+  contract = await Contract.deploy(royaltyFee);
+  await contract.deployed();
+});
+
 
   describe('NFTMarketplace', () => {
     beforeEach(async () => {

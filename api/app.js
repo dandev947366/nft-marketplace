@@ -16,13 +16,13 @@ app.post('/process', async (req, res) => {
   try {
     const name = req.body.name
     const description = req.body.description
-    const price = req.body.price
+    // const price = req.body.price
     const image = req.files.image
 
-    if (!name || !description || !price || !image) {
+    if (!name || !description || !image) {
       return res
         .status(400)
-        .send('name, description, and price must not be empty')
+        .send('name, description, and image must not be empty')
     }
 
     let params

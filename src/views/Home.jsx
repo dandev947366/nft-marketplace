@@ -1,5 +1,4 @@
 import Hero from "../components/Hero";
-import CreateNFT from "../components/MintAI";
 import OfferItem from "../components/OfferItem";
 import ArtWork from "../components/ArtWork";
 import { useGlobalState } from "../store";
@@ -7,7 +6,7 @@ import Footer from "../components/Footer";
 import Empty from "../components/Empty";
 import ChangePrice from "../components/ChangePrice";
 import PlaceBid from "../components/PlaceBid";
-import MintAI from "../components/CreateNFT";
+import CreateNFT from "../components/CreateNFT";
 const Home = () => {
   const [auctions] = useGlobalState("auctions");
 

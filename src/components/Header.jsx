@@ -1,14 +1,76 @@
 import { Link } from "react-router-dom";
-import Promotion from "./Promotion";
 import { connectWallet } from '../services/blockchain';
 import { truncate, useGlobalState } from '../store';
-
+import { useEffect, useState, useRef } from "react";
+import { ethers } from "ethers";
+import Web3Modal from "web3modal";
 const Header = () => {
-  const [connectedAccount] = useGlobalState('connectedAccount');
+  const [provider, setProvider] = useState(null);
+  const [address, setAddress] = useState("");
+  const [owner, setOwner] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const web3ModalRef = useRef(null);
+  //CONNECT WALLET
+  const getProviderOrSigner = async (needSigner = false) => {
+    const provider = await web3ModalRef.current.connect();
+    const web3Provider = new providers.Web3Provider(provider);
+    console.log("provider", provider);
+    console.log("web3Provider", web3Provider);
+
+    // If user is not connected to the OP network, let them know and throw an error
+    // const OP_CHAINID = 11155420;
+    const OP_CHAINID = 10;
+    const LOCAL_HOST_CHAINID = 31337;
+    const { chainId } = await web3Provider.getNetwork();
+    if (chainId !== OP_CHAINID) {
+      window.alert("Change the network to OP_CHAINID");
+      throw new Error("Change the network to OP_CHAINID");
+    }
+    console.log("chainId", chainId);
+
+    if (needSigner) {
+      const signer = web3Provider.getSigner();
+      console.log("signer", signer);
+
+      return signer;
+    }
+    const signer = web3Provider.getSigner();
+    const address = await signer.getAddress();
+    const truncatedAddress =
+      address.slice(0, 6) + "..." + address.slice(38, 42);
+    setAddress(truncatedAddress);
+    console.log("address", address);
+    return web3Provider;
+  };
+  const handleConnectWallet = async () => {
+    try {
+      await getProviderOrSigner();
+      setWalletConnected(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const connectWallet = async () => {
+    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+    if (!walletConnected) {
+      // Assign the Web3Modal class to the reference object by setting it's `current` value
+      // The `current` value is persisted throughout as long as this page is open
+      web3ModalRef.current = new Web3Modal({
+        network: "opsepolia",
+        providerOptions: {},
+        disableInjectedProvider: false
+      });
+
+      handleConnectWallet();
+    }
+  };
+  useEffect(() => {
+    getProviderOrSigner();
+  }, [walletConnected]);
 
   return (
     <>
-      {/* <Promotion /> */}
       <nav className="inset-x-0 top-0 w-full bg-white border-b md:px-2 dark:border-gray-500/50 dark:bg-gray-800 py-2.5 shadow-lg z-50">
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
           <Link to="/" className="flex items-center">
@@ -17,23 +79,19 @@ const Header = () => {
             </span>
           </Link>
           <div className="flex items-center lg:order-2">
-            <div className="hidden mt-2 mr-4 sm:inline-block">
-              <span></span>
-            </div>
-            {connectedAccount ? (
+
               <button
-                className="bg-indigo-600 hover:bg-indigo-500 font-medium rounded-lg text-white px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 shadow-sm"
-              >
-                {truncate(connectedAccount, 4, 4, 11)}
-              </button>
-            ) : (
-              <button
-                className="text-indigo-600 bg-white hover:bg-indigo-50 focus:ring-4 focus:ring-white font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 shadow-sm"
-                onClick={connectWallet}
+                className="bg-indigo-600 hover:bg-indigo-500 font-medium rounded-lg text-white px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 shadow-sm" onClick={() => {
+                  if (!walletConnected) {
+                    alert("Please connect your wallet to create a proposal.");
+                  } else {
+                    setModalOpen(true);
+                  }
+                }}
               >
                 Connect Wallet
               </button>
-            )}
+
             <button
               data-collapse-toggle="mobile-menu-2"
               type="button"
@@ -99,3 +157,5 @@ const Header = () => {
 };
 
 export default Header;
+
+

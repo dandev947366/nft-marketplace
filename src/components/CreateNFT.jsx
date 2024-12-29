@@ -6,10 +6,13 @@ import { useState, useEffect } from 'react';
 import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
 import axios from 'axios';
+import {uploadJSONToIPFS, uploadFileToIPFS} from "../config/pinata"
 const CreateNFT = () => {
   const [boxModal] = useGlobalState("boxModal");
+  const [openBox] = useGlobalState("openBox");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState();
   const [fileUrl, setFileUrl] = useState("");
   const [imgBase64, setImgBase64] = useState(null);
   const [provider, setProvider] = useState(null);
@@ -35,7 +38,9 @@ const CreateNFT = () => {
       setFileUrl(e.target.files[0]);
     };
   };
-
+  const createImage = () => {
+    console.log("Create image....")
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !description || !fileUrl) return;
@@ -106,7 +111,7 @@ const CreateNFT = () => {
               <input
                 type="file"
                 accept="image/png, image/gif, image/jpeg, image/webp"
-                className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:bg-indigo-600 file:text-white file:border-solid file:border-slate-500 file:cursor-pointer file:ring-0 file:py-2 file:px-4 "
+                className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:bg-indigo-600 file:text-white file:border-solid file:border-slate-500 file:cursor-pointer file:ring-0 file:py-2 file:px-4  "
                 required
                 onChange={changeImage}
               />
@@ -131,17 +136,20 @@ const CreateNFT = () => {
             onChange={(e) => setDescription(e.target.value)}
             name="description"
           />
-          <button
-            type="submit"
-            className="flex bg-indigo-600 justify-center items-center w-[200px] text-white text-md py-2 px-5 mb-2 rounded-full drop-shadow-xl border border-transparent hover:text-white hover:bg-indigo-500 " onClick={createImage}
-          >
-            Create NFT
-          </button>
+          <input
+            type="number"
+            className="block flex w-full p-3 mb-3 placeholder-gray-500 rounded-md dark:placeholder-gray-300 dark:bg-gray-800 dark:text-gray-200"
+            required
+            placeholder="Price (in ETH)"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            name="price"
+          />
           <button
             type="submit"
             className="flex bg-indigo-600 justify-center items-center w-[200px] text-white text-md py-2 px-5 rounded-full drop-shadow-xl border border-transparent hover:text-white mt-2 hover:bg-indigo-500 "
           >
-            Mint
+            Upload NFT
           </button>
         </form>
 
