@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
 // Use Alchemy's URL to create a provider
-const provider = new ethers.JsonRpcProvider("https://eth-mainnet.alchemyapi.io/v2/L2qclcHjbkaoT3iRtFWpmuqdjIX-VLMJ");
+const provider = new ethers.JsonRpcProvider();
 
 async function getBlockNumber() {
   const blockNumber = await provider.getBlockNumber();
