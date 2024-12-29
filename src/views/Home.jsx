@@ -7,12 +7,14 @@ import Empty from "../components/Empty";
 import ChangePrice from "../components/ChangePrice";
 import PlaceBid from "../components/PlaceBid";
 import CreateNFT from "../components/CreateNFT";
+import GasPrice from "../components/GasPrice";
 const Home = () => {
   const [auctions] = useGlobalState("auctions");
 
   return (
       <>
       <div className="w-4/5 mx-auto mt-11 dark:bg-gray-800 dark:border-gray-700">
+      <GasPrice />
         <Hero />
         {auctions.length > 0 ? <ArtWork auctions={auctions} /> : <Empty />}
         {/* <MintAI /> */}
