@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSDK } from "@metamask/sdk-react";
-import axios from "axios";
 
 const Header = () => {
   const [account, setAccount] = useState(null);
