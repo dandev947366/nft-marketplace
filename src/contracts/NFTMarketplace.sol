@@ -1,347 +1,187 @@
-//SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.0;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract NFTMarketplace is ERC721URIStorage, ReentrancyGuard, Ownable {
+contract NFTMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
-    Counters.Counter private totalItems;
+    //_tokenIds variable has the most recent minted tokenId
+    Counters.Counter private _tokenIds;
+    //Keeps track of the number of items sold on the marketplace
+    Counters.Counter private _itemsSold;
+    //owner is the contract address that created the smart contract
+    address payable owner;
+    //The fee charged by the marketplace to be allowed to list an NFT
+    uint256 listPrice = 0.01 ether;
 
-    address companyAcc;
-    uint royalityFee;
-    uint listingPrice = 0.02 ether;
-    mapping(uint => AuctionStruct) auctionedItem;
-    mapping(uint => bool) auctionedItemExist;
-    mapping(string => uint) existingURIs;
-    mapping(uint => BidderStruct[]) biddersOf;
-
-    constructor(uint _royaltyFee) ERC721("NFTMarketplace Tokens", "NMP") {
-        companyAcc = msg.sender;
-        royalityFee = _royaltyFee;
+    //The structure to store info about a listed token
+    struct ListedNFT {
+        uint256 tokenId;
+        address payable owner;
+        address payable seller;
+        uint256 price;
+        bool currentlyListed;
     }
 
-    struct BidderStruct {
-        address bidder;
-        uint price;
-        uint timestamp;
-        bool refunded;
-        bool won;
-    }
-
-    struct AuctionStruct {
-        string name;
-        string description;
-        string image;
-        uint tokenId;
-        address seller;
-        address owner;
-        address winner;
-        uint price;
-        bool sold;
-        bool live;
-        bool biddable;
-        uint bids;
-        uint duration;
-    }
-
-    event AuctionItemCreated(
-        uint indexed tokenId,
-        address seller,
+    //the event emitted when a token is successfully listed
+    event NFTListedSuccess(
+        uint256 indexed tokenId,
         address owner,
-        uint price,
-        bool sold
+        address seller,
+        uint256 price,
+        bool currentlyListed
     );
 
-    function getListingPrice() public view returns (uint) {
-        return listingPrice;
+    //This mapping maps tokenId to token info and is helpful when retrieving details about a tokenId
+    mapping(uint256 => ListedNFT) private idToListedNFT;
+
+    constructor() ERC721("NFTMarketplace", "NFTM") {
+        owner = payable(msg.sender);
     }
 
-    function setListingPrice(uint _price) public  onlyOwner{
-        listingPrice = _price;
+    function updateListPrice(uint256 _listPrice) public payable {
+        require(owner == msg.sender, "Only owner can update listing price");
+        listPrice = _listPrice;
     }
 
-    function changePrice(uint tokenId, uint price) public {
-        require(
-            auctionedItem[tokenId].owner == msg.sender,
-            "Unauthorized"
-        );
-        require(
-            getTimestamp(0, 0, 0, 0) > auctionedItem[tokenId].duration,
-            "Auction still Live"
-        );
-        require(price > 0 ether, "Price must be greater than zero");
-
-        auctionedItem[tokenId].price = price;
+    function getListPrice() public view returns (uint256) {
+        return listPrice;
     }
 
-    function mintToken(string memory tokenURI) internal returns (bool) {
-        totalItems.increment();
-        uint tokenId = totalItems.current();
-
-        _mint(msg.sender, tokenId);
-        _setTokenURI(tokenId, tokenURI);
-
-        return true;
+    function getLatestIdToListedNFT() public view returns (ListedNFT memory) {
+        uint256 currentTokenId = _tokenIds.current();
+        return idToListedNFT[currentTokenId];
     }
 
-    function createAuction(
-        string memory name,
-        string memory description,
-        string memory image,
+    function getListedNFTForId(
+        uint256 tokenId
+    ) public view returns (ListedNFT memory) {
+        return idToListedNFT[tokenId];
+    }
+
+    function getCurrentToken() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
+    //The first time a token is created, it is listed here
+    function createToken(
         string memory tokenURI,
-        uint price
-    ) public payable nonReentrant {
-        require(price > 0 ether, "Price must > 0 ethers.");
-        require(
-            msg.value >= listingPrice,
-            "Price must >= listing price."
-        );
-        require(mintToken(tokenURI), "Mint unsuccessful");
+        uint256 price
+    ) public payable returns (uint) {
+        //Increment the tokenId counter, which is keeping track of the number of minted NFTs
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
 
-        uint tokenId = totalItems.current();
+        //Mint the NFT with tokenId newTokenId to the address who called createToken
+        _safeMint(msg.sender, newTokenId);
 
-        AuctionStruct memory item;
-        item.tokenId = tokenId;
-        item.name = name;
-        item.description = description;
-        item.image = image;
-        item.price = price;
-        item.duration = getTimestamp(0, 0, 0, 0);
-        item.seller = msg.sender;
-        item.owner = msg.sender;
+        //Map the tokenId to the tokenURI (which is an IPFS URL with the NFT metadata)
+        _setTokenURI(newTokenId, tokenURI);
 
-        auctionedItem[tokenId] = item;
-        auctionedItemExist[tokenId] = true;
+        //Helper function to update Global variables and emit an event
+        createListedNFT(newTokenId, price);
 
-        payTo(companyAcc, listingPrice);
-
-        emit AuctionItemCreated(tokenId, msg.sender, address(0), price, false);
+        return newTokenId;
     }
 
-    function offerAuction(
-        uint tokenId,
-        bool biddable,
-        uint sec,
-        uint min,
-        uint hour,
-        uint day
-    ) public {
-        require(
-            auctionedItem[tokenId].owner == msg.sender,
-            "Unauthorized"
-        );
-        require(
-            auctionedItem[tokenId].bids == 0,
-            "Winner must claim"
+    function createListedNFT(uint256 tokenId, uint256 price) private {
+        //Make sure the sender sent enough ETH to pay for listing
+        require(msg.value == listPrice, "Hopefully sending the correct price");
+        //Just sanity check
+        require(price > 0, "Make sure the price isn't negative");
+
+        //Update the mapping of tokenId's to Token details, useful for retrieval functions
+        idToListedNFT[tokenId] = ListedNFT(
+            tokenId,
+            payable(address(this)),
+            payable(msg.sender),
+            price,
+            true
         );
 
-        if (!auctionedItem[tokenId].live) {
-            setApprovalForAll(address(this), true);
-            IERC721(address(this)).transferFrom(
-                msg.sender,
-                address(this),
-                tokenId
-            );
+        _transfer(msg.sender, address(this), tokenId);
+        //Emit the event for successful transfer. The frontend parses this message and updates the end user
+        emit NFTListedSuccess(tokenId, address(this), msg.sender, price, true);
+    }
+
+    //This will return all the NFTs currently listed to be sold on the marketplace
+    function getAllNFTs() public view returns (ListedNFT[] memory) {
+        uint nftCount = _tokenIds.current();
+        ListedNFT[] memory tokens = new ListedNFT[](nftCount);
+        uint currentIndex = 0;
+        uint currentId;
+        //at the moment currentlyListed is true for all, if it becomes false in the future we will
+        //filter out currentlyListed == false over here
+        for (uint i = 0; i < nftCount; i++) {
+            currentId = i + 1;
+            ListedNFT storage currentItem = idToListedNFT[currentId];
+            tokens[currentIndex] = currentItem;
+            currentIndex += 1;
         }
-
-        auctionedItem[tokenId].bids = 0;
-        auctionedItem[tokenId].live = true;
-        auctionedItem[tokenId].sold = false;
-        auctionedItem[tokenId].biddable = biddable;
-        auctionedItem[tokenId].duration = getTimestamp(sec, min, hour, day);
+        //the array 'tokens' has the list of all NFTs in the marketplace
+        return tokens;
     }
 
-    function placeBid(uint tokenId) public payable {
-        require(
-            msg.value >= auctionedItem[tokenId].price,
-            "Insufficient"
-        );
-        require(
-            auctionedItem[tokenId].duration > getTimestamp(0, 0, 0, 0),
-            "Not available"
-        );
-        require(auctionedItem[tokenId].biddable, "Bidding only");
-
-        BidderStruct memory bidder;
-        bidder.bidder = msg.sender;
-        bidder.price = msg.value;
-        bidder.timestamp = getTimestamp(0, 0, 0, 0);
-
-        biddersOf[tokenId].push(bidder);
-        auctionedItem[tokenId].bids++;
-        auctionedItem[tokenId].price = msg.value;
-        auctionedItem[tokenId].winner = msg.sender;
-    }
-
-    function claimPrize(uint tokenId, uint bid) public {
-        require(
-            getTimestamp(0, 0, 0, 0) > auctionedItem[tokenId].duration,
-            "Still live"
-        );
-        require(
-            auctionedItem[tokenId].winner == msg.sender,
-            "Not winner"
-        );
-
-        biddersOf[tokenId][bid].won = true;
-        uint price = auctionedItem[tokenId].price;
-        address seller = auctionedItem[tokenId].seller;
-
-        auctionedItem[tokenId].winner = address(0);
-        auctionedItem[tokenId].live = false;
-        auctionedItem[tokenId].sold = true;
-        auctionedItem[tokenId].bids = 0;
-        auctionedItem[tokenId].duration = getTimestamp(0, 0, 0, 0);
-
-        uint royality = (price * royalityFee) / 100;
-        payTo(auctionedItem[tokenId].owner, (price - royality));
-        payTo(seller, royality);
-        IERC721(address(this)).transferFrom(address(this), msg.sender, tokenId);
-        auctionedItem[tokenId].owner = msg.sender;
-
-        performRefund(tokenId);
-    }
-
-    function performRefund(uint tokenId) internal {
-        for (uint i = 0; i < biddersOf[tokenId].length; i++) {
-            if (biddersOf[tokenId][i].bidder != msg.sender) {
-                biddersOf[tokenId][i].refunded = true;
-                payTo(
-                    biddersOf[tokenId][i].bidder,
-                    biddersOf[tokenId][i].price
-                );
-            } else {
-                biddersOf[tokenId][i].won = true;
-            }
-            biddersOf[tokenId][i].timestamp = getTimestamp(0, 0, 0, 0);
-        }
-
-        delete biddersOf[tokenId];
-    }
-
-    function buyAuctionedItem(uint tokenId) public payable nonReentrant {
-        require(
-            msg.value >= auctionedItem[tokenId].price,
-            "Insufficient"
-        );
-        require(
-            auctionedItem[tokenId].duration > getTimestamp(0, 0, 0, 0),
-            "Not available"
-        );
-        require(!auctionedItem[tokenId].biddable, "Purchase only");
-
-        address seller = auctionedItem[tokenId].seller;
-        auctionedItem[tokenId].live = false;
-        auctionedItem[tokenId].sold = true;
-        auctionedItem[tokenId].bids = 0;
-        auctionedItem[tokenId].duration = getTimestamp(0, 0, 0, 0);
-
-        uint royality = (msg.value * royalityFee) / 100;
-        payTo(auctionedItem[tokenId].owner, (msg.value - royality));
-        payTo(seller, royality);
-        IERC721(address(this)).transferFrom(
-            address(this),
-            msg.sender,
-            auctionedItem[tokenId].tokenId
-        );
-
-        auctionedItem[tokenId].owner = msg.sender;
-    }
-
-    function getAuction(uint id) public view returns (AuctionStruct memory) {
-        require(auctionedItemExist[id], "Not found");
-        return auctionedItem[id];
-    }
-
-    function getAllAuctions()
-        public
-        view
-        returns (AuctionStruct[] memory Auctions)
-    {
-        uint totalItemsCount = totalItems.current();
-        Auctions = new AuctionStruct[](totalItemsCount);
-
-        for (uint i = 0; i < totalItemsCount; i++) {
-            Auctions[i] = auctionedItem[i + 1];
-        }
-    }
-
-    function getMyAuctions()
-        public
-        view
-        returns (AuctionStruct[] memory Auctions)
-    {
-        uint totalItemsCount = totalItems.current();
-        uint totalSpace;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].owner == msg.sender) {
-                totalSpace++;
+    //Returns all the NFTs that the current user is owner or seller in
+    function getMyNFTs() public view returns (ListedNFT[] memory) {
+        uint totalItemCount = _tokenIds.current();
+        uint itemCount = 0;
+        uint currentIndex = 0;
+        uint currentId;
+        //Important to get a count of all the NFTs that belong to the user before we can make an array for them
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToListedNFT[i + 1].owner == msg.sender ||
+                idToListedNFT[i + 1].seller == msg.sender
+            ) {
+                itemCount += 1;
             }
         }
 
-        Auctions = new AuctionStruct[](totalSpace);
-
-        uint index;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].owner == msg.sender) {
-                Auctions[index] = auctionedItem[i + 1];
-                index++;
+        //Once you have the count of relevant NFTs, create an array then store all the NFTs in it
+        ListedNFT[] memory items = new ListedNFT[](itemCount);
+        for (uint i = 0; i < totalItemCount; i++) {
+            if (
+                idToListedNFT[i + 1].owner == msg.sender ||
+                idToListedNFT[i + 1].seller == msg.sender
+            ) {
+                currentId = i + 1;
+                ListedNFT storage currentItem = idToListedNFT[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
             }
         }
+        return items;
     }
 
-    function getLiveAuctions()
-        public
-        view
-        returns (AuctionStruct[] memory Auctions)
-    {
-        uint totalItemsCount = totalItems.current();
-        uint totalSpace;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].duration > getTimestamp(0, 0, 0, 0)) {
-                totalSpace++;
-            }
-        }
+    function executeSale(uint256 tokenId) public payable {
+        uint price = idToListedNFT[tokenId].price;
+        address seller = idToListedNFT[tokenId].seller;
+        require(
+            msg.value == price,
+            "Please submit the asking price in order to complete the purchase"
+        );
 
-        Auctions = new AuctionStruct[](totalSpace);
+        //update the details of the token
+        idToListedNFT[tokenId].currentlyListed = true;
+        idToListedNFT[tokenId].seller = payable(msg.sender);
+        _itemsSold.increment();
 
-        uint index;
-        for (uint i = 0; i < totalItemsCount; i++) {
-            if (auctionedItem[i + 1].duration > getTimestamp(0, 0, 0, 0)) {
-                Auctions[index] = auctionedItem[i + 1];
-                index++;
-            }
-        }
+        //Actually transfer the token to the new owner
+        _transfer(address(this), msg.sender, tokenId);
+        //approve the marketplace to sell NFTs on your behalf
+        approve(address(this), tokenId);
+
+        //Transfer the listing fee to the marketplace creator
+        payable(owner).transfer(listPrice);
+        //Transfer the proceeds from the sale to the seller of the NFT
+        payable(seller).transfer(msg.value);
     }
 
-    function getBidders(uint tokenId)
-        public
-        view
-        returns (BidderStruct[] memory)
-    {
-        return biddersOf[tokenId];
-    }
-
-    function getTimestamp(
-        uint sec,
-        uint min,
-        uint hour,
-        uint day
-    ) internal view returns (uint) {
-        return
-            block.timestamp +
-            (1 seconds * sec) +
-            (1 minutes * min) +
-            (1 hours * hour) +
-            (1 days * day);
-    }
-
-    function payTo(address to, uint amount) internal {
-        (bool success, ) = payable(to).call{value: amount}("");
-        require(success);
-    }
+    //We might add a resell token function in the future
+    //In that case, tokens won't be listed by default but users can send a request to actually list a token
+    //Currently NFTs are listed by default
 }
