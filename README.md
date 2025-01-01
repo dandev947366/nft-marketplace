@@ -36,4 +36,5 @@ v22.9.0
 
 ## UML Diagram for Smart Contract
 
-![UMLDiagramSmartContract](https://github.com/dandev947366/nft-marketplace/blob/0df7887d2a6251c76c0882ca25e47a768c5d7375/documents/smart-contract-design.png)
+![UMLDiagramSmartContract](https://github.com/dandev947366/nft-marketplace/blob/7c3bcef384e5596c1187d1af3b97e18c475c0c5b/documents/smart-contract-design.png)
+
