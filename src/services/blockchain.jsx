@@ -1,7 +1,7 @@
-// import abi from '../abis/abi'
-// import address from '../abis/contractAddress.json'
-// import { getGlobalState, setGlobalState } from '../store'
-// import { ethers } from 'ethers'
+import abi from '../abis/abi'
+import address from '../abis/contractAddress.json'
+import { getGlobalState, setGlobalState } from '../store'
+import { ethers } from 'ethers'
 // // import { checkAuthState, logOutWithCometChat } from './chat'
 
 // const { ethereum } = window
@@ -67,34 +67,34 @@
 //   }
 // }
 
-// const createNftItem = async ({
-//   name,
-//   description,
-//   image,
-//   metadataURI,
-//   price,
-// }) => {
-//   try {
-//     if (!ethereum) return alert('Please install Metamask')
-//     const connectedAccount = getGlobalState('connectedAccount')
-//     const contract = await getEthereumContract()
-//     tx = await contract.createAuction(
-//       name,
-//       description,
-//       image,
-//       metadataURI,
-//       toWei(price),
-//       {
-//         from: connectedAccount,
-//         value: toWei(0.02),
-//       },
-//     )
-//     await tx.wait()
-//     await loadAuctions()
-//   } catch (error) {
-//     reportError(error)
-//   }
-// }
+const createNftItem = async ({
+  name,
+  description,
+  image,
+  metadataURI,
+  price,
+}) => {
+  try {
+    if (!ethereum) return alert('Please install Metamask')
+    const connectedAccount = getGlobalState('connectedAccount')
+    const contract = await getEthereumContract()
+    tx = await contract.createAuction(
+      name,
+      description,
+      image,
+      metadataURI,
+      toWei(price),
+      {
+        from: connectedAccount,
+        value: toWei(0.02),
+      },
+    )
+    await tx.wait()
+    await loadAuctions()
+  } catch (error) {
+    reportError(error)
+  }
+}
 
 // const updatePrice = async ({ tokenId, price }) => {
 //   try {
@@ -183,20 +183,20 @@
 //   }
 // }
 
-// const loadAuctions = async () => {
-//   try {
-//     if (!ethereum) return alert('Please install Metamask')
-//     const contract = await getEthereumContract()
-//     const auctions = await contract.getLiveAuctions()
-//     setGlobalState('auctions', structuredAuctions(auctions))
-//     setGlobalState(
-//       'auction',
-//       structuredAuctions(auctions).sort(() => 0.5 - Math.random())[0],
-//     )
-//   } catch (error) {
-//     reportError(error)
-//   }
-// }
+const loadAuctions = async () => {
+  try {
+    if (!ethereum) return alert('Please install Metamask')
+    const contract = await getEthereumContract()
+    const auctions = await contract.getLiveAuctions()
+    setGlobalState('auctions', structuredAuctions(auctions))
+    setGlobalState(
+      'auction',
+      structuredAuctions(auctions).sort(() => 0.5 - Math.random())[0],
+    )
+  } catch (error) {
+    reportError(error)
+  }
+}
 
 // const loadAuction = async (id) => {
 //   try {
@@ -266,11 +266,11 @@
 //   throw new Error('No ethereum object.')
 // }
 
-// export {
+export {
 //   isWalletConnected,
 //   connectWallet,
-//   createNftItem,
-//   loadAuctions,
+  createNftItem,
+  loadAuctions,
 //   loadAuction,
 //   loadCollections,
 //   offerItemOnMarket,
@@ -279,4 +279,4 @@
 //   getBidders,
 //   claimPrize,
 //   updatePrice,
-// }
+}

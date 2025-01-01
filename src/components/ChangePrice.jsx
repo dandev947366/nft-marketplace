@@ -1,5 +1,5 @@
 import { FaTimes } from "react-icons/fa";
-import picture4 from "../assets/images/picture4.png";
+import dog1 from "../assets/images/dog1.jpg";
 import {useState} from 'react';
 import { useGlobalState, setGlobalState } from "../store";
 const ChangePrice = () => {
@@ -43,7 +43,7 @@ const ChangePrice = () => {
           <div className="flex items-center justify-center my-4 w-full">
             <div className="shrink-0 rounded-xl overflow-hidden h-20 w-20">
               <img
-                src={auction.imageUrl || picture4}
+                src={auction.imageUrl || dog1}
                 alt="Artwork"
                 className="h-full w-full object-cover cursor-pointer"
               />

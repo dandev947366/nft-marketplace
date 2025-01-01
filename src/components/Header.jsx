@@ -6,7 +6,7 @@ const Header = () => {
   const [account, setAccount] = useState(null);
   const { sdk, connected, connecting, provider } = useSDK();
   const [chainId, setChainId] = useState(null);
-
+  const [balance, setBalance] = useState(null);
   const connect = async () => {
     try {
       const accounts = await sdk?.connect();
@@ -15,6 +15,28 @@ const Header = () => {
       console.warn("Failed to connect:", err);
     }
   };
+  const fetchBalance = async () => {
+    if (!account) return;
+    try {
+      const response = await fetch(
+        `https://api.etherscan.io/api?module=account&action=balance&address=${account}&tag=latest&apikey=${process.env.OP_SCAN_API_KEY}`
+      );
+      const data = await response.json();
+      if (data.status === '1') {
+        const balanceInEther = parseInt(data.result, 16) / 1e18;
+        setBalance(balanceInEther);
+        console.log(balance)
+      } else {
+        setError('Failed to fetch balance');
+      }
+    } catch (err) {
+      setError('An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
   const getChainId = async () => {
     try {
@@ -35,7 +57,7 @@ const Header = () => {
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0xa" }], // 0xa is the hex for Optimism Mainnet (chain ID 10)
+        params: [{ chainId: "0x" }],
       });
     } catch (switchError) {
       if (switchError.code === 4902) {
@@ -45,15 +67,17 @@ const Header = () => {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: "0xa", // 0xa is the hex for Optimism Mainnet (chain ID 10)
+                chainId: "0xa", // 0xa is the hex for Optimism Mainnet (chain ID 10)0xaa37dc
                 chainName: "Optimism Mainnet",
-                rpcUrls: ["https://mainnet.optimism.io"],
+                rpcUrls: ["https://sepolia.optimism.io"],
+                // rpcUrls: ["https://mainnet.optimism.io"],
                 nativeCurrency: {
                   name: "Ether",
                   symbol: "ETH",
                   decimals: 18,
                 },
-                blockExplorerUrls: ["https://optimistic.etherscan.io"],
+                blockExplorerUrls: ["https://sepolia.optimism.io"],
+                // blockExplorerUrls: ["https://optimistic.etherscan.io"],
               },
             ],
           });
@@ -67,8 +91,9 @@ const Header = () => {
   };
 
   useEffect(() => {
-    getChainId(); // Check the chain ID when the component mounts
-  }, []);
+    getChainId();// Check the chain ID when the component mounts
+    fetchBalance();
+  }, [chainId, balance]);
 
   // Define networks array
   const networks = [
@@ -77,6 +102,7 @@ const Header = () => {
     { name: 'Arbitrum One', chainId: 42161 },
     { name: 'Avalanche C-Chain', chainId: 43114 },
     { name: 'OP', chainId: 10 },
+    { name: 'OP Sepolia', chainId: 11155420 },
     { name: 'Polygon', chainId: 137 },
     { name: 'Base', chainId: 8453 },
     { name: 'Cronos', chainId: 25 },
@@ -171,9 +197,14 @@ const Header = () => {
     <div className="flex items-center gap-1 px-12 py-1 text-sm text-gray-700 rounded bg-gray-300/50 dark:bg-gray-700/50 dark:text-gray-300 mx-auto ml-auto">
       {/* Display network name */}
       {chainId && (
+      <div className="">
         <span className="">
           Network: {getNetworkName(chainId)}
         </span>
+       <span className="p-3">
+         Balance: {balance} ETH
+       </span>
+       </div>
       )}
     </div>
   </>

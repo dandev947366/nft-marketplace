@@ -8,8 +8,8 @@ const Banner = () => {
     setGlobalState("boxModal", "scale-100");
     setGlobalState("openBox", true);
   };
-  const onChangeAI = () => {
-    setGlobalState("aimintModal", "scale-100");
+  const onChangeMint = () => {
+    setGlobalState("mintModal", "scale-100");
     setGlobalState("openBox", true);
   };
 
@@ -27,6 +27,9 @@ const Banner = () => {
         </div>
         <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700 hover:bg-indigo-500 ">
           <button onClick={onChange}>Create NFT</button>
+        </div>
+        <div className="p-2 font-semibold bg-slate-500 text-white rounded-lg inline-block shadow-sm shadow-gray-700 hover:bg-slate-400 ">
+          <button onClick={onChangeMint}>Mint NFT</button>
         </div>
         {/* <div className="p-2 mx-4 font-semibold bg-indigo-600 text-white rounded-lg inline-block shadow-sm shadow-gray-700">
           <button onClick={onChangeAI}>Create NFT with AI</button>
