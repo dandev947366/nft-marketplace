@@ -33,3 +33,7 @@ v22.9.0
 ## NFT Mint Diagram
 
 ![NFTMintDiagram](https://github.com/dandev947366/nft-marketplace/blob/ea63c9db2e333b570418848e424bf97c687f38a9/documents/NFTMint.png)
+
+## UML Diagram for Smart Contract
+
+![UMLDiagramSmartContract](https://github.com/dandev947366/nft-marketplace/blob/0df7887d2a6251c76c0882ca25e47a768c5d7375/documents/smart-contract-design.png)
