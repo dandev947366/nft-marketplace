@@ -6,7 +6,8 @@
 ---
 
 ## Architecture
-
+### Minter
+![NFTMintDiagram](https://github.com/dandev947366/nft-marketplace/blob/ea63c9db2e333b570418848e424bf97c687f38a9/documents/NFTMint.png)
 ---
 
 ## Application Design
