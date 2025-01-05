@@ -37,3 +37,5 @@ v22.9.0
 
 ![UMLDiagramSmartContract](https://github.com/dandev947366/nft-marketplace/blob/7c3bcef384e5596c1187d1af3b97e18c475c0c5b/documents/smart-contract-design.png)
 
+## Smart Contract Test Cases Sheet
+https://bit.ly/nftmarketplace-testcases
