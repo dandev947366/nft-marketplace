@@ -23,6 +23,9 @@ module.exports = {
           },
         },
       },
+      printColorAdjust: {
+        exact: 'exact',
+      },
       animation: {
         'slide-in': 'slide-in 0.5s ease-out',
       },

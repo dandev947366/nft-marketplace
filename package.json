@@ -45,6 +45,7 @@
   "devDependencies": {
     "@coinbase/wallet-sdk": "^4.2.4",
     "@faker-js/faker": "^7.6.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^4.5.0",
     "@tailwindcss/forms": "0.4.0",
     "assert": "^2.1.0",

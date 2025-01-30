@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/dandev947366/Desktop/Projects-github/nft-marketplace/src/contracts/NFTMarketplace.sol": {
-      "lastModificationDate": 1735410007222,
-      "contentHash": "1ed307bba4478bf58585e1d1865f4a31",
+      "lastModificationDate": 1735759009122,
+      "contentHash": "472b9570cc40f7ad2955808f1632a842",
       "sourceName": "src/contracts/NFTMarketplace.sol",
       "solcConfig": {
         "version": "0.8.11",
@@ -29,14 +29,13 @@
         }
       },
       "imports": [
+        "hardhat/console.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
-        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
+        "@openzeppelin/contracts/token/ERC721/ERC721.sol"
       ],
       "versionPragmas": [
-        ">=0.7.0 <0.9.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "NFTMarketplace"
@@ -696,6 +695,82 @@
         "^0.8.0"
       ],
       "artifacts": []
+    },
+    "/Users/dandev947366/Desktop/Projects-github/nft-marketplace/src/contracts/Auction.sol": {
+      "lastModificationDate": 1735758755573,
+      "contentHash": "1ed307bba4478bf58585e1d1865f4a31",
+      "sourceName": "src/contracts/Auction.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Counters.sol",
+        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
+        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        ">=0.7.0 <0.9.0"
+      ],
+      "artifacts": [
+        "NFTMarketplace"
+      ]
+    },
+    "/Users/dandev947366/Desktop/Projects-github/nft-marketplace/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1735422469018,
+      "contentHash": "681c532e816169606d13a5fe8b475074",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
+      ]
     }
   }
 }

@@ -1,5 +1,5 @@
 import abi from '../abis/abi'
-import address from '../abis/contractAddress.json'
+// import address from '../abis/contractAddress.json'
 import { getGlobalState, setGlobalState } from '../store'
 import { ethers } from 'ethers'
 // // import { checkAuthState, logOutWithCometChat } from './chat'

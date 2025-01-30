@@ -1,6 +1,8 @@
 module.exports = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    autoprefixer: {
+      overrideBrowserslist: ['last 2 versions', '> 1%'],
+    },
+    'postcss-print-media-query': {},
   },
-}
+};
