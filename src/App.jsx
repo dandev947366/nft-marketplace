@@ -6,18 +6,13 @@ import Header from "./components/Header";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 const App = () => {
-
   return (
-    // <div className="min-h-screen bg-gradient-to-t from-[#43cea2] bg-repeat to-[#185a9d] bg-center subpixel-antialiased">
-    <div className="min-h-screen dark:bg-gray-800 bg-center subpixel-antialiased dark:border-gray-700">
+    <div className="min-h-screen bg-center subpixel-antialiased bg-gray-800">
       <Header />
       <Routes>
-        <Route path="/" element={<Home />}>
-        </Route>
-        <Route path="/collections" element={<Collections />}>
-        </Route>
-        <Route path="/nft/:id" element={<NFT />}>
-        </Route>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/collections" element={<Collections />}></Route>
+        <Route path="/nft/:id" element={<NFT />}></Route>
       </Routes>
       <ToastContainer
         position="bottom-center"
