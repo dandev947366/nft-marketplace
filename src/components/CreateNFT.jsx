@@ -1,11 +1,31 @@
 import { FaTimes } from "react-icons/fa";
 import picture4 from "../assets/images/picture4.png";
-import { useGlobalState, setGlobalState } from "../store";
+import {
+  useGlobalState,
+  setGlobalState,
+  setLoadingMsg,
+  setAlert
+} from "../store";
 import { useState } from "react";
-import { toast } from 'react-toastify'
-import { createNftItem } from "../services/blockchain"
-import axios from 'axios'
+import { toast } from "react-toastify";
+import { createNftItem } from "../services/blockchain";
+import { create } from "ipfs-http-client";
+import { mintNFT } from "../Blockchain.Services";
+import axios from "axios";
+const auth =
+  "Basic " +
+  Buffer.from(
+    process.env.REACT_APP_INFURIA_PID + ":" + process.env.REACT_APP_INFURIA_API
+  ).toString("base64");
 
+const client = create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth
+  }
+});
 const CreateNFT = () => {
   const [boxModal] = useGlobalState("boxModal");
   const [openBox] = useGlobalState("openBox");
@@ -34,37 +54,35 @@ const CreateNFT = () => {
     };
   };
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!name || !price || !description || !fileUrl) return
+    e.preventDefault();
+    if (!title || !price || !description || !fileUrl) return;
 
-    const formData = new FormData()
-    formData.append('name', name)
-    formData.append('price', price)
-    formData.append('description', description)
-    formData.append('image', fileUrl)
+    try {
+      setLoadingMsg("Uploading file to IPFS...");
 
-    await toast.promise(
-      new Promise(async (resolve, reject) => {
-        await axios
-          .post('http://localhost:9000/process', formData)
-          .then(async (res) => {
-            await createNftItem(res.data)
-              .then(async () => {
-                closeModal()
-                resolve()
-              })
-              .catch(() => reject())
-            reject()
-          })
-          .catch(() => reject())
-      }),
-      {
-        pending: 'Minting & saving data to chain...',
-        success: 'Minting completed, will reflect within 30sec 👌',
-        error: 'Encountered error 🤯',
-      },
-    )
-  }
+      // Upload file to IPFS
+      const created = await client.add(fileUrl);
+      const metadataURI = `https://ipfs.io/ipfs/${created.path}`;
+      const nft = { title, price, description, metadataURI };
+
+      setLoadingMsg("Initializing transaction...");
+      setFileUrl(metadataURI);
+
+      await toast.promise(mintNFT(nft), {
+        pending: "Minting & saving data to chain...",
+        success: "Minting completed, will reflect within 30 sec 👌",
+        error: "Encountered an error 🤯"
+      });
+
+      resetForm();
+      setAlert("Minting completed...", "green");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error uploading file: ", error);
+      setAlert("Minting failed...", "red");
+    }
+  };
+
   const resetForm = () => {
     setFileUrl("");
     setImgBase64("");

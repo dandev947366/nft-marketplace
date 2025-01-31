@@ -1,4 +1,4 @@
-import abi from '../abis/abi'
+import abi from '../abis2/abi'
 // import address from '../abis/contractAddress.json'
 import { getGlobalState, setGlobalState } from '../store'
 import { ethers } from 'ethers'

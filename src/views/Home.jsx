@@ -8,6 +8,7 @@ import ChangePrice from "../components/ChangePrice";
 import PlaceBid from "../components/PlaceBid";
 import CreateNFT from "../components/CreateNFT";
 import GasPrice from "../components/GasPrice";
+import Transactions from "../components/Transactions";
 const Home = () => {
   const [auctions] = useGlobalState("auctions");
 
@@ -22,6 +23,7 @@ const Home = () => {
         <ChangePrice />
         <OfferItem />
         <CreateNFT />
+        <Transactions  />
       </div>
       <div className="w-full">
         <Footer />

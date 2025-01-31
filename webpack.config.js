@@ -20,6 +20,18 @@ module.exports = {
       url: require.resolve('url'),
       path: require.resolve('path-browserify'),
     },
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": require.resolve('stream-http'),
+      "https": require.resolve('https-browserify'),
+      "stream": require.resolve('stream-browserify'),
+      "crypto": require.resolve('crypto-browserify'),
+      "os": require.resolve('os-browserify/browser'),
+    },
   },
   module: {
     rules: [
