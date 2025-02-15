@@ -12,6 +12,7 @@ import { createNftItem } from "../services/blockchain";
 import { create } from "ipfs-http-client";
 import { mintNFT } from "../Blockchain.Services";
 import axios from "axios";
+import {Buffer} from 'buffer';
 const auth =
   "Basic " +
   Buffer.from(

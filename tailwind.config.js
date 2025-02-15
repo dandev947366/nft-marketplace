@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   mode: 'jit',
   darkMode: false, // or 'media' or 'class'
@@ -35,4 +35,4 @@ module.exports = {
     extend: {},
   },
   plugins: [require('@tailwindcss/forms')],
-}
+};
