@@ -14,6 +14,8 @@ const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
   openPromotion: true,
   auction: [],
   connectedAccount: [],
+  loading: { show: false, msg: "" },
+  alert: { show: false, msg: "", color: "green" } ,
   // connectedAccount: '',
   nft: null,
   nfts: [],
@@ -34,7 +36,8 @@ const { getGlobalState, useGlobalState, setGlobalState } = createGlobalState({
   ]
 });
 const setAlert = (msg, color = "green") => {
-  setGlobalState("loading", false);
+  // setGlobalState("loading", false);
+  setGlobalState("loading", { show: false, msg: "" });
   setGlobalState("alert", { show: true, msg, color });
   setTimeout(() => {
     setGlobalState("alert", { show: false, msg: "", color });

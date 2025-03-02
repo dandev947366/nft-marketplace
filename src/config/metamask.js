@@ -1,7 +1,7 @@
 import axios from "axios";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import {ethers} from "ethers"
-dotenv.config();
+// dotenv.config();
 
 const INFURA_API_KEY = process.env.INFURA_API_KEY || "default_api_key";
 const INFURA_API_KEY_SECRET = process.env.INFURA_API_KEY_SECRET || "default_api_secret";

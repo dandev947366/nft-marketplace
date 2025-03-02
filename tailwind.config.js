@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   mode: 'jit',
   darkMode: false, // or 'media' or 'class'
@@ -23,9 +23,6 @@ export default {
           },
         },
       },
-      printColorAdjust: {
-        exact: 'exact',
-      },
       animation: {
         'slide-in': 'slide-in 0.5s ease-out',
       },
@@ -35,4 +32,4 @@ export default {
     extend: {},
   },
   plugins: [require('@tailwindcss/forms')],
-};
+}
